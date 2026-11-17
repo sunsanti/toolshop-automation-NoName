@@ -21,6 +21,7 @@ class BasePage:
         self.cart_quantity = page.get_by_test_id("cart-quantity")
         self.nav_menu = page.get_by_test_id("nav-menu")
         self.toast = page.get_by_role("alert")
+        self.footer_github = page.get_by_test_id("footer-learn-github")
 
     def open(self):
         self.page.goto(self.route_prefix + self.path)
@@ -37,6 +38,12 @@ class BasePage:
 
         self.nav_sign_in.click()
         return LoginPage(self.page)
+
+    def open_github_in_new_tab(self):
+        """Click the footer GitHub link (target=_blank) and return the new tab's Page."""
+        with self.page.context.expect_page() as info:
+            self.footer_github.click()
+        return info.value
 
     def go_to_contact(self):
         from pages.contact_page import ContactPage
