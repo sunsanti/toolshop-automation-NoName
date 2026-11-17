@@ -8,6 +8,8 @@ from pages.contact_page import ContactPage
 from pages.home_page import HomePage
 from pages.login_page import LoginPage
 
+pytestmark = pytest.mark.ui
+
 
 @pytest.mark.smoke
 def test_search_pliers(page: Page):

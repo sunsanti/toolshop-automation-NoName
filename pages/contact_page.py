@@ -12,6 +12,7 @@ class ContactPage(BasePage):
         self.subject = page.get_by_test_id("subject")
         self.message = page.get_by_test_id("message")
         self.attachment = page.get_by_test_id("attachment")
+        self.attachment_error = page.get_by_test_id("attachment-error")
         self.submit_button = page.get_by_test_id("contact-submit")
         self.success = page.get_by_role("alert")
         self.errors = page.locator("[data-test$='-error']")

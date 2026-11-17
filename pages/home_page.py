@@ -24,7 +24,11 @@ class HomePage(BasePage):
         self.sort_select = page.get_by_test_id("sort")
         self.sorting_completed = page.get_by_test_id("sorting_completed")
         self.product_prices = page.get_by_test_id("product-price")
-        # TODO B2/B4 (later): price_slider_max = page.get_by_role("slider").nth(1)
+        self.price_slider_max = page.get_by_role("slider").nth(1)
+        self.filter_completed = page.get_by_test_id("filter_completed")
+
+    def category(self, name: str):
+        return self.page.get_by_role("checkbox", name=name, exact=True)
 
     def open(self):
         """Return only after the first product list has arrived.
@@ -45,6 +49,27 @@ class HomePage(BasePage):
         """value: name,asc | name,desc | price,asc | price,desc"""
         self.sort_select.select_option(value)
         return self
+
+    def filter_by_category(self, name: str):
+        self.category(name).check()
+        return self
+
+    def lower_max_price(self, steps: int) -> int:
+        """Press ArrowLeft on the right slider handle (1 dollar per press).
+
+        Returns the new max price once the product list request with between=price,1,<max> answered.
+        PROD sends it in the QUERY body, BUGGY in the GET query string.
+        """
+        target = int(self.price_slider_max.get_attribute("aria-valuenow")) - steps
+        wanted = f"price,1,{target}"
+        with self.page.expect_response(
+            lambda r: PRODUCT_LIST.search(r.url) is not None
+            and wanted in r.request.url + (r.request.post_data or "")
+        ):
+            self.price_slider_max.focus()
+            for _ in range(steps):
+                self.price_slider_max.press("ArrowLeft")
+        return target
 
     def product_card(self, name: str):
         # Exact name match: "Pliers" must not match "Combination Pliers".
