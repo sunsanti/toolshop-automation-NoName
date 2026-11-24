@@ -21,7 +21,8 @@ class BasePage:
         self.cart_quantity = page.get_by_test_id("cart-quantity")
         self.nav_menu = page.get_by_test_id("nav-menu")
         self.toast = page.get_by_role("alert")
-        self.footer_github = page.get_by_test_id("footer-learn-github")
+        # The Docker Toolshop used in CI has no data-test on this link, so match the href (works on both).
+        self.footer_github = page.locator("footer a[href*='github.com/testsmith-io']").first
 
     def open(self):
         self.page.goto(self.route_prefix + self.path)
